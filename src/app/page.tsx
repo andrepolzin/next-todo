@@ -12,7 +12,6 @@ import {
   List,
   CircleEllipsis,
   Check,
-  SquarePen,
   Trash2,
   ListCheck,
   Sigma,
@@ -23,19 +22,12 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import EditTask from "@/components/edit-task";
 
 const Home = () => {
   return (
@@ -72,21 +64,7 @@ const Home = () => {
               <div className="w-1 h-full bg-green-300"></div>
               <p className="flex-1 px-2 text-sm">Study ReactJs</p>
               <div className="flex items-center gap-2">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <SquarePen size={18} className="cursor-pointer" />
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Edit task</DialogTitle>
-                    </DialogHeader>
-
-                    <div className="flex gap-2">
-                      <Input placeholder="Edit task..." />
-                      <Button className="cursor-pointer">Edit</Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                <EditTask />
                 <Trash2 size={18} className="cursor-pointer" />
               </div>
             </div>
