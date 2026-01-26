@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,8 +30,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import EditTask from "@/components/edit-task";
+import { getTasks } from "@/actions/get-tasks-from-db";
 
 const Home = () => {
+  const handleGetTasks = async () => {
+    const tasks = await getTasks();
+    console.log(tasks);
+  };
+
   return (
     <main className="flex justify-center items-center bg-gray-100 w-full h-screen">
       <Card className="w-lg">
@@ -41,6 +49,7 @@ const Home = () => {
           </Button>
         </CardHeader>
 
+        <Button onClick={handleGetTasks}>Get Tasks</Button>
         <CardContent>
           <Separator className="mb-4" />
 
