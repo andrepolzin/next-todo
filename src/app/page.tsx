@@ -35,6 +35,7 @@ import { useEffect, useState } from "react";
 import { Tasks } from "@/generated/prisma/client";
 import { newTask } from "@/actions/add-task";
 import { deleteTask } from "@/actions/delete-task";
+import { toast } from "sonner";
 
 const Home = () => {
   const [taskList, setTaskList] = useState<Tasks[]>([]);
@@ -59,7 +60,8 @@ const Home = () => {
       const addTask = await newTask(task);
 
       if (!addTask) return;
-
+      setTask("");
+      toast.success("Task has been created");
       await handleGetTasks();
     } catch (error) {
       throw error;
@@ -68,11 +70,14 @@ const Home = () => {
 
   const handleDeleteTask = async (id: string) => {
     try {
+      if (!id) return;
+
       const deletedTask = await deleteTask(id);
 
       if (!deletedTask) return;
 
       await handleGetTasks();
+      toast.warning("Task has been deleted");
     } catch (error) {
       throw error;
     }
@@ -89,6 +94,7 @@ const Home = () => {
           <Input
             placeholder="Add task"
             onChange={(e) => setTask(e.target.value)}
+            value={task}
           />
           <Button
             variant={"default"}
