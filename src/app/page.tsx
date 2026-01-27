@@ -34,6 +34,7 @@ import { getTasks } from "@/actions/get-tasks-from-db";
 import { useEffect, useState } from "react";
 import { Tasks } from "@/generated/prisma/client";
 import { newTask } from "@/actions/add-task";
+import { deleteTask } from "@/actions/delete-task";
 
 const Home = () => {
   const [taskList, setTaskList] = useState<Tasks[]>([]);
@@ -42,7 +43,9 @@ const Home = () => {
   const handleGetTasks = async () => {
     try {
       const tasks = await getTasks();
+
       if (!tasks) return;
+
       setTaskList(tasks);
     } catch (error) {
       throw error;
@@ -50,10 +53,29 @@ const Home = () => {
   };
 
   const handleAddTask = async () => {
-    if (!task) return;
-    const addTask = await newTask(task);
-    if (!addTask) return;
-    handleGetTasks();
+    try {
+      if (!task) return;
+
+      const addTask = await newTask(task);
+
+      if (!addTask) return;
+
+      await handleGetTasks();
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleDeleteTask = async (id: string) => {
+    try {
+      const deletedTask = await deleteTask(id);
+
+      if (!deletedTask) return;
+
+      await handleGetTasks();
+    } catch (error) {
+      throw error;
+    }
   };
 
   useEffect(() => {
@@ -107,7 +129,11 @@ const Home = () => {
 
                 <div className="flex items-center gap-2">
                   <EditTask />
-                  <Trash2 size={18} className="cursor-pointer" />
+                  <Trash2
+                    size={18}
+                    className="cursor-pointer"
+                    onClick={() => handleDeleteTask(task.id)}
+                  />
                 </div>
               </div>
             ))}
