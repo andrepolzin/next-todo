@@ -13,7 +13,7 @@ const EditTask = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <SquarePen size={18} className="cursor-pointer" />
+        <SquarePen size={18} className="cursor-pointer hover:text-gray-700" />
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

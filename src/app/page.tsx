@@ -36,6 +36,7 @@ import { Tasks } from "@/generated/prisma/client";
 import { newTask } from "@/actions/add-task";
 import { deleteTask } from "@/actions/delete-task";
 import { toast } from "sonner";
+import { toggleTask } from "@/actions/toggle-task";
 
 const Home = () => {
   const [taskList, setTaskList] = useState<Tasks[]>([]);
@@ -57,9 +58,9 @@ const Home = () => {
     try {
       if (!task) return;
 
-      const addTask = await newTask(task);
+      const taskAdded = await newTask(task);
 
-      if (!addTask) return;
+      if (!taskAdded) return;
       setTask("");
       toast.success("Task has been created");
       await handleGetTasks();
@@ -79,6 +80,39 @@ const Home = () => {
       await handleGetTasks();
       toast.warning("Task has been deleted");
     } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleToggleTask = async (taskId: string) => {
+    // Cloning taskList in case there is an error toggling tasks so we can roll back
+    // to previous task state
+    const previousTasks = [...taskList];
+
+    try {
+      if (!taskId) return;
+
+      // update frontend first
+      setTaskList((prev) => {
+        const updatedTaskList = prev.map((task) => {
+          if (task.id === taskId) {
+            return {
+              ...task,
+              done: !task.done,
+            };
+          } else {
+            return task;
+          }
+        });
+
+        return updatedTaskList;
+      });
+
+      const toggledTask = await toggleTask(taskId);
+      console.log("ToggledTask: ", toggledTask);
+    } catch (error) {
+      // If there is an error, let's set taskList to our previous status
+      setTaskList(previousTasks);
       throw error;
     }
   };
@@ -130,14 +164,21 @@ const Home = () => {
                 className="flex h-14 justify-between items-center border-t"
                 key={task.id}
               >
-                <div className="w-1 h-full bg-green-300"></div>
-                <p className="flex-1 px-2 text-sm">{task.task}</p>
+                <div
+                  className={`${task.done ? "w-1 h-full bg-green-400" : "w-1 h-full bg-red-400"}`}
+                ></div>
+                <p
+                  className="flex-1 px-2 text-sm cursor-pointer hover:text-gray-700"
+                  onClick={() => handleToggleTask(task.id)}
+                >
+                  {task.task}
+                </p>
 
                 <div className="flex items-center gap-2">
                   <EditTask />
                   <Trash2
                     size={18}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:text-gray-700"
                     onClick={() => handleDeleteTask(task.id)}
                   />
                 </div>
