@@ -17,6 +17,7 @@ import {
   Trash2,
   ListCheck,
   Sigma,
+  LoaderCircle,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -41,6 +42,7 @@ import { toggleTask } from "@/actions/toggle-task";
 const Home = () => {
   const [taskList, setTaskList] = useState<Tasks[]>([]);
   const [task, setTask] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleGetTasks = async () => {
     try {
@@ -55,8 +57,13 @@ const Home = () => {
   };
 
   const handleAddTask = async () => {
+    setLoading(true);
     try {
-      if (!task) return;
+      if (!task) {
+        toast.info("Insert a new task");
+        setLoading(false);
+        return;
+      }
 
       const taskAdded = await newTask(task);
 
@@ -67,6 +74,8 @@ const Home = () => {
     } catch (error) {
       throw error;
     }
+
+    setLoading(false);
   };
 
   const handleDeleteTask = async (id: string) => {
@@ -135,7 +144,7 @@ const Home = () => {
             className="cursor-pointer"
             onClick={handleAddTask}
           >
-            <Plus />
+            {loading ? <LoaderCircle className="animate-spin" /> : <Plus />}
             Add Task
           </Button>
         </CardHeader>
@@ -228,7 +237,7 @@ const Home = () => {
 
           <div className="flex gap-2 justify-end w-full mt-2">
             <Sigma size={18} />
-            <p className="text-xs">3 tasks in total</p>
+            <p className="text-xs">{taskList.length} tasks in total</p>
           </div>
         </CardFooter>
       </Card>
