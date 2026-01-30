@@ -36,6 +36,7 @@ const Home = () => {
   const [task, setTask] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [currentFilter, setCurrentFilter] = useState<FilterType>("all");
+  const [filteredTasks, setFilteredTasks] = useState<Tasks[]>([]);
 
   const handleGetTasks = async () => {
     try {
@@ -123,6 +124,21 @@ const Home = () => {
     handleGetTasks();
   }, []);
 
+  useEffect(() => {
+    switch (currentFilter) {
+      case "all":
+        setFilteredTasks(taskList);
+        break;
+      case "pending":
+        const pendingTasks = taskList.filter((task) => !task.done);
+        setFilteredTasks(pendingTasks);
+        break;
+      case "done":
+        const completed = taskList.filter((task) => task.done);
+        setFilteredTasks(completed);
+    }
+  }, [currentFilter, taskList]);
+
   return (
     <main className="flex justify-center items-center bg-gray-100 w-full h-screen">
       <Card className="w-lg">
@@ -151,13 +167,13 @@ const Home = () => {
           />
 
           <div className="mt-4 border-b">
-            {taskList.length === 0 && (
+            {filteredTasks.length === 0 && (
               <p className="text-xs border-t py-2">
                 There are no tasks at the moment.
               </p>
             )}
 
-            {taskList.map((task) => (
+            {filteredTasks.map((task) => (
               <div
                 className="flex h-14 justify-between items-center border-t"
                 key={task.id}
@@ -189,7 +205,10 @@ const Home = () => {
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-1">
               <ListCheck size={18} />
-              <p className="text-xs">Completed Tasks (3/3)</p>
+              <p className="text-xs">
+                Completed Tasks ({taskList.filter((task) => task.done).length}/
+                {taskList.length})
+              </p>
             </div>
 
             <AlertDialog>
