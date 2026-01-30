@@ -9,17 +9,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import {
-  Plus,
-  List,
-  CircleEllipsis,
-  Check,
-  Trash2,
-  ListCheck,
-  Sigma,
-  LoaderCircle,
-} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Plus, Trash2, ListCheck, Sigma, LoaderCircle } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,12 +28,14 @@ import { newTask } from "@/actions/add-task";
 import { deleteTask } from "@/actions/delete-task";
 import { toast } from "sonner";
 import { toggleTask } from "@/actions/toggle-task";
+import Filter from "@/components/filter";
+import { FilterType } from "@/components/filter";
 
 const Home = () => {
   const [taskList, setTaskList] = useState<Tasks[]>([]);
   const [task, setTask] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [currentFilter, setCurrentFilter] = useState<string>("all");
+  const [currentFilter, setCurrentFilter] = useState<FilterType>("all");
 
   const handleGetTasks = async () => {
     try {
@@ -153,32 +145,10 @@ const Home = () => {
         <CardContent>
           <Separator className="mb-4" />
 
-          <div className="flex gap-2 mb-4">
-            <Badge
-              className="cursor-pointer"
-              variant={`${currentFilter === "all" ? "default" : "outline"}`}
-              onClick={() => setCurrentFilter("all")}
-            >
-              <List />
-              Todos
-            </Badge>
-            <Badge
-              className="cursor-pointer"
-              variant={`${currentFilter === "pending" ? "default" : "outline"}`}
-              onClick={() => setCurrentFilter("pending")}
-            >
-              <CircleEllipsis />
-              In Progress
-            </Badge>
-            <Badge
-              className="cursor-pointer"
-              variant={`${currentFilter === "done" ? "default" : "outline"}`}
-              onClick={() => setCurrentFilter("done")}
-            >
-              <Check />
-              Done
-            </Badge>
-          </div>
+          <Filter
+            currentFilter={currentFilter}
+            setCurrentFilter={setCurrentFilter}
+          />
 
           <div className="mt-4 border-b">
             {taskList.length === 0 && (
