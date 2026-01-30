@@ -175,7 +175,7 @@ const Home = () => {
                 </p>
 
                 <div className="flex items-center gap-2">
-                  <EditTask />
+                  <EditTask task={task} handleGetTasks={handleGetTasks} />
                   <Trash2
                     size={18}
                     className="cursor-pointer hover:text-gray-700"
