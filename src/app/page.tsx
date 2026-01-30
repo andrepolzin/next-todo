@@ -43,6 +43,7 @@ const Home = () => {
   const [taskList, setTaskList] = useState<Tasks[]>([]);
   const [task, setTask] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [currentFilter, setCurrentFilter] = useState<string>("all");
 
   const handleGetTasks = async () => {
     try {
@@ -153,21 +154,39 @@ const Home = () => {
           <Separator className="mb-4" />
 
           <div className="flex gap-2 mb-4">
-            <Badge className="cursor-pointer" variant={"default"}>
+            <Badge
+              className="cursor-pointer"
+              variant={`${currentFilter === "all" ? "default" : "outline"}`}
+              onClick={() => setCurrentFilter("all")}
+            >
               <List />
               Todos
             </Badge>
-            <Badge className="cursor-pointer" variant={"outline"}>
+            <Badge
+              className="cursor-pointer"
+              variant={`${currentFilter === "pending" ? "default" : "outline"}`}
+              onClick={() => setCurrentFilter("pending")}
+            >
               <CircleEllipsis />
               In Progress
             </Badge>
-            <Badge className="cursor-pointer" variant={"outline"}>
+            <Badge
+              className="cursor-pointer"
+              variant={`${currentFilter === "done" ? "default" : "outline"}`}
+              onClick={() => setCurrentFilter("done")}
+            >
               <Check />
               Done
             </Badge>
           </div>
 
           <div className="mt-4 border-b">
+            {taskList.length === 0 && (
+              <p className="text-xs border-t py-2">
+                There are no tasks at the moment.
+              </p>
+            )}
+
             {taskList.map((task) => (
               <div
                 className="flex h-14 justify-between items-center border-t"
