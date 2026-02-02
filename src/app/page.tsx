@@ -239,7 +239,11 @@ const Home = () => {
           <div className="h-2 bg-gray-100 w-full mt-4 rounded-md">
             <div
               className="h-full bg-blue-500 rounded-md"
-              style={{ width: "50%" }}
+              style={{
+                width: `
+                  ${(taskList.filter((task) => task.done).length / taskList.length) * 100}%
+                `,
+              }}
             ></div>
           </div>
 
