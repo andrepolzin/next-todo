@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { toggleTask } from "@/actions/toggle-task";
 import Filter from "@/components/filter";
 import { FilterType } from "@/components/filter";
+import { clearCompleted } from "@/actions/clear-completed-tasks";
 
 const Home = () => {
   const [taskList, setTaskList] = useState<Tasks[]>([]);
@@ -116,6 +117,18 @@ const Home = () => {
     } catch (error) {
       // If there is an error, let's set taskList to our previous status
       setTaskList(previousTasks);
+      throw error;
+    }
+  };
+
+  const clearCompletedTasks = async () => {
+    try {
+      await clearCompleted();
+
+      if (!clearCompleted) return;
+
+      await handleGetTasks();
+    } catch (error) {
       throw error;
     }
   };
@@ -225,11 +238,14 @@ const Home = () => {
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    Are you sure you want to delete x items?
+                    Are you sure you want to delete{" "}
+                    {taskList.filter((task) => task.done).length} items?
                   </AlertDialogTitle>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogAction>Yes</AlertDialogAction>
+                  <AlertDialogAction onClick={clearCompletedTasks}>
+                    Yes
+                  </AlertDialogAction>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                 </AlertDialogFooter>
               </AlertDialogContent>
